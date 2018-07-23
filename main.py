@@ -1,7 +1,7 @@
 import utilities as ut
 import pandas as pd
 
-
+pd.set_option('display.max_columns', 20)
 param_path = r'd:\\sites_json.json'
 parameters_json = ut.parameter_file_load(param_path)
 sql_path = r'd:\\db_query.sql'
@@ -17,8 +17,7 @@ for index, row in parameters_json.iterrows():
 
     conn = ut.oracle_connect(db_ip, db_user, db_pass, db_sid)
     sql = ut.read_query(sql_path)
-    curr = conn.cursor()
-    site_results = ut.multi_query(sql, curr, site)
+    site_results = ut.collect_data(sql, conn, site)
 
     print(site_results)
 

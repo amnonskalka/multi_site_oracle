@@ -1,7 +1,7 @@
 import pandas as pd
 import cx_Oracle as orcl
 
-result_columns = ['SITE', 'CLIENT_VERSION', 'VERSION_DATE', 'DB_HOST_NAME', 'ORACLE_VERSION','ORACLE_EDITION', 'INSTANCE_STATUS', 'RESTRICTED_LOGIN', 'DB_STATUS','DB_FREE_SPACE(GB)']
+result_columns = ['SITE', 'CLIENT_VERSION', 'VERSION_DATE', 'DB_HOST_NAME', 'ORACLE_VERSION','ORACLE_EDITION', 'INSTANCE_STATUS', 'RESTRICTED_LOGIN', 'DB_STATUS','DB_FREE_SPACE_GB']
 
 
 def parameter_file_load(x):
@@ -37,3 +37,20 @@ def multi_query(sql, curr, site):
             result_list += list_conv
     result_list.insert(0, site)
     return result_list
+
+
+def collect_data(sql, con, site):
+    temp_df = pd.DataFrame(columns=result_columns)
+    for query in sql:
+        query_result = pd.read_sql(query, con=con)
+        df = pd.DataFrame(query_result)
+        values = list(df)
+        for name in values:
+            temp_df[name] = df[name]
+    temp_df['SITE'] = site.upper()
+    return temp_df
+
+
+def add_new_row(df, site):
+    new_row = pd.Series([site, None, None, None, None, None, None, None, None, None])
+    df.append(new_row, ignore_index=True)
