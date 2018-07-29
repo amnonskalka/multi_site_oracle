@@ -1,7 +1,10 @@
 import pandas as pd
 import cx_Oracle as orcl
 
-result_columns = ['SITE', 'CLIENT_VERSION', 'VERSION_DATE', 'DB_HOST_NAME', 'ORACLE_VERSION','ORACLE_EDITION', 'INSTANCE_STATUS', 'RESTRICTED_LOGIN', 'DB_STATUS', 'DB_FREE_SPACE_GB', 'DB_USED_SPACE_GB']
+result_columns = ['SITE', 'CLIENT_VERSION', 'VERSION_DATE',
+                  'DB_HOST_NAME', 'ORACLE_VERSION','ORACLE_EDITION',
+                  'INSTANCE_STATUS', 'RESTRICTED_LOGIN', 'DB_STATUS',
+                  'DB_FREE_SPACE_GB', 'DB_USED_SPACE_GB']
 
 
 def parameter_file_load(x):
@@ -29,8 +32,12 @@ def read_query(x):
 
 
 def collect_data(sql, con, site):
-    '''the func is getting 3 parameters : sql - list of query's, con - connection string to connect the oracle, site - client site name
-    the func run each query and return all of the results in single dataframe type
+    '''
+    The func' is getting 3 parameters :
+    sql - list of query's,
+    con - connection string to connect the oracle,
+    site - client site name
+    The func' run each query and return all of the results in single DataFrame type
     '''
     temp_df = pd.DataFrame(columns=result_columns)
     for query in sql:
