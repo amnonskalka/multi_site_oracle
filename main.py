@@ -18,8 +18,7 @@ for index, row in parameters_json.iterrows():
     conn = ut.oracle_connect(db_ip, db_user, db_pass, db_sid)
     sql = ut.read_query(sql_path)
     site_results = ut.collect_data(sql, conn, site)
-
-    print(site_results)
-
+    results = results.append(site_results)
 
 conn.close()
+print(results)

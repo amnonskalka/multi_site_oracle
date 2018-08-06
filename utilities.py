@@ -1,7 +1,10 @@
 import pandas as pd
 import cx_Oracle as orcl
 
-result_columns = ['SITE', 'CLIENT_VERSION', 'VERSION_DATE', 'DB_HOST_NAME', 'ORACLE_VERSION','ORACLE_EDITION', 'INSTANCE_STATUS', 'RESTRICTED_LOGIN', 'DB_STATUS','DB_FREE_SPACE_GB']
+result_columns = ['SITE', 'CLIENT_VERSION', 'VERSION_DATE',
+                  'DB_HOST_NAME', 'ORACLE_VERSION','ORACLE_EDITION',
+                  'INSTANCE_STATUS', 'RESTRICTED_LOGIN', 'DB_STATUS',
+                  'DB_FREE_SPACE_GB', 'DB_USED_SPACE_GB']
 
 
 def parameter_file_load(x):
@@ -28,29 +31,21 @@ def read_query(x):
     return sql_commands
 
 
-def multi_query(sql, curr, site):
-    result_list = []
-    for i in sql:
-        run = curr.execute(i)
-        for result in run:
-            list_conv = list(result)
-            result_list += list_conv
-    result_list.insert(0, site)
-    return result_list
-
-
 def collect_data(sql, con, site):
+    '''
+    The func' is getting 3 parameters :
+    sql - list of query's,
+    con - connection string to connect the oracle,
+    site - client site name
+    The func' run each query and return all of the results in single DataFrame type
+    '''
     temp_df = pd.DataFrame(columns=result_columns)
     for query in sql:
         query_result = pd.read_sql(query, con=con)
         df = pd.DataFrame(query_result)
-        values = list(df)
-        for name in values:
+        for name in list(df):
             temp_df[name] = df[name]
     temp_df['SITE'] = site.upper()
     return temp_df
 
 
-def add_new_row(df, site):
-    new_row = pd.Series([site, None, None, None, None, None, None, None, None, None])
-    df.append(new_row, ignore_index=True)
